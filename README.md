@@ -73,6 +73,63 @@ The operation `x * y` calculates:
 
 **Result of `x * y`:** A new vector `(0, 2, 4)`.
 
+
+Of course. This code is a **nested `for` loop** that constructs a **pairwise similarity matrix** by comparing every possible pair of genotypes in a dataset.
+
+Let's break it down in detail.
+
+---
+
+###  Line-by-Line Explanation
+
+#### **The Outer Loop: `for (i in 1:n_genotypes)`**
+*   **Purpose:** This loop selects the **first genotype (`i`)** for the comparison. It iterates through each genotype, one by one, from the first (`1`) to the last (`n_genotypes`).
+*   **Analogy:** Imagine you have a list of people. This loop is like going through the list and pointing to the first person: "Now, let's compare *this person* to everyone else, including themselves."
+
+#### **The Inner Loop: `for (j in 1:n_genotypes)`**
+*   **Purpose:** For the genotype `i` selected by the outer loop, this loop selects the **second genotype (`j`)** for the comparison. It also iterates through every genotype from `1` to `n_genotypes`.
+*   **Analogy:** For the person you just pointed to (`i`), you now go through the entire list again, pointing to a second person (`j`). You are forming every possible pair: `(i,1)`, `(i,2)`, `(i,3)`, ..., `(i, n_genotypes)`.
+
+#### **The Core Operation: `similarity_matrix[i, j] <- similarity_index(genotype_data[i, ], genotype_data[j, ])`**
+This is the most important line. For the specific pair `(i, j)`:
+1.  **`genotype_data[i, ]`**: This extracts the entire row of genetic marker data (e.g., 100 SNPs) for genotype `i`.
+2.  **`genotype_data[j, ]`**: This extracts the entire row of genetic marker data for genotype `j`.
+3.  **`similarity_index(...)`**: This is a custom function (defined elsewhere in your code) that takes the two vectors of genetic data and computes a single number representing their similarity. The textbook example used: `sum(x * y) / (2 * length(x))`.
+4.  **`similarity_matrix[i, j] <- ...`**: The calculated similarity score is then stored in the `i-th` row and `j-th` column of the `similarity_matrix`.
+
+###  Visual Walkthrough (with a tiny example)
+
+Let's say `n_genotypes = 3` and our `genotype_data` has 3 markers:
+
+| Genotype | SNP1 | SNP2 | SNP3 |
+| :--- | :--- | :--- | :--- |
+| **1** | 0 | 1 | 2 |
+| **2** | 0 | 0 | 1 |
+| **3** | 2 | 1 | 0 |
+
+The loop will execute in this order:
+
+1.  `i = 1` (Compare Genotype 1 to everyone)
+    *   `j = 1`: Calculate similarity between **G1** and **G1**. Store result in `[1,1]`.
+    *   `j = 2`: Calculate similarity between **G1** and **G2**. Store result in `[1,2]`.
+    *   `j = 3`: Calculate similarity between **G1** and **G3**. Store result in `[1,3]`.
+2.  `i = 2` (Compare Genotype 2 to everyone)
+    *   `j = 1`: Calculate similarity between **G2** and **G1**. Store result in `[2,1]`.
+    *   `j = 2`: Calculate similarity between **G2** and **G2**. Store result in `[2,2]`.
+    *   `j = 3`: Calculate similarity between **G2** and **G3**. Store result in `[2,3]`.
+3.  `i = 3` (Compare Genotype 3 to everyone)
+    *   `j = 1`: Calculate similarity between **G3** and **G1**. Store result in `[3,1]`.
+    *   `j = 2`: Calculate similarity between **G3** and **G2**. Store result in `[3,2]`.
+    *   `j = 3`: Calculate similarity between **G3** and **G3**. Store result in `[3,3]`.
+
+After the loops finish, the `similarity_matrix` will be a **3x3 symmetric matrix** (because similarity between `i` and `j` is the same as between `j` and `i`):
+
+| | Genotype 1 | Genotype 2 | Genotype 3 |
+| :--- | :--- | :--- | :--- |
+| **Genotype 1** | `score(1,1)` | `score(1,2)` | `score(1,3)` |
+| **Genotype 2** | `score(2,1)` | `score(2,2)` | `score(2,3)` |
+| **Genotype 3** | `score(3,1)` | `score(3,2)` | `score(3,3)` |
+
 **Why does this calculation match the textbook's scoring rule (2, 1, 0)?** Let's see what the multiplication result means for each possible genotypic comparison:
 
 | Genotype `x` | Genotype `y` | Interpretation (Allelic State) | `x * y` | Textbook Score |
