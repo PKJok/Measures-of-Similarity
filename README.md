@@ -1,2 +1,2 @@
 # Measures-of-Similarity
-This is based on quantitative genetics to study how the genotypes are similar to each other
+This is based on quantitative genetics to study how the genotypes are similar to each other.
