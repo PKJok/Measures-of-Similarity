@@ -20,14 +20,18 @@ Here is what the function likely looks like, based on the textbook's formula `su
 
 ```r
 similarity_index <- function(x, y) {
-  # The core calculation
-  total_score <- sum(x * y)
-  # Normalization factor: 2 alleles * number of loci
-  max_possible_score <- 2 * length(x)
-  # Final similarity value
-  similarity <- total_score / max_possible_score
-  return(similarity)
+  sum(x * y) / (2 * length(x))
 }
+
+# Compute pairwise similarity matrix
+similarity_matrix <- matrix(0, nrow = n_genotypes, ncol = n_genotypes)
+
+for (i in 1:n_genotypes) {
+  for (j in 1:n_genotypes) {
+    similarity_matrix[i, j] <- similarity_index(genotype_data[i, ], genotype_data[j, ])
+  }
+}
+
 ```
 
 Now, let's see how `x` and `y` handle the row data.
