@@ -1,4 +1,4 @@
-# Measures of Similarity
+# Measures of Similarity (Similarity Matrix)
 
 ## `similarity_index` Function
 
