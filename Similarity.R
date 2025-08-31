@@ -101,19 +101,21 @@ plot(clust3, hang=-0.5, main = "Gower_Cluster")
 
 
 # Nei's distance
-library(ape)
-dist_nei <- dist.dna(as.DNAbin(genotype_data), model = "N")
+#library(ape)
+#dist_nei <- dist.dna(as.DNAbin(genotype_data), model = "N")
 
 
 # Kmeans clustering
 set.seed(123)
 kmeans_result <- kmeans(genotype_data, centers = 3)
+kmeans_result$cluster
 
 # Add cluster assignment to PCA plot
 plot(pca$x[, 1], pca$x[, 2],
      col = kmeans_result$cluster, pch = 16,
-     xlab = "PC1", ylab = "PC2", main = "K-means Clustering (K=3)")
-text(pca_result$x[, 1], pca_result$x[, 2], labels = rownames(genotype_data), pos = 3)
+     xlab = "PC1", ylab = "PC2", main = "K-means Clustering (K=3)", 
+     ylim = c(-10,7), xlim = c(-8,8))
+text(pca$x[, 1], pca$x[, 2], labels = rownames(genotype_data), pos = 2)
 
 
 # PCA with clusters
